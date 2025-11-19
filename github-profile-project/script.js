@@ -23,21 +23,30 @@ function fetchUser(data) {
 
 }
 
+function fetchRepos(userLogin){
+    return fetch(`https://api.github.com/users/${userLogin}/repos`)
+    .then(res => res.json())
+}
+
 function displayUser() {
     if (input.value.trim() === "") {
         alert("Please enter a username")
     }
     else {
+        userCard.classList.remove('hide-card')
         userCard.style.display = 'none'
         loading.innerText = "Loading....."
         loading.style.display = 'block'
         document.body.style.pointerEvents = 'none'
+
         setTimeout(() => {
             fetchUser(input.value)
                 .then((userData) => {
                     userCard.style.display = 'grid'
+                    userCard.classList.add('show-card')
                     searchContainer.style.display = 'none'
                     loading.style.display = 'none'
+
                     document.body.style.pointerEvents = ''
 
                     photo.setAttribute('src', userData.avatar_url)
@@ -48,6 +57,11 @@ function displayUser() {
                     followingCount.innerText = userData.following
                     publicRepos.innerText = userData.public_repos
                     githubProfileLink.setAttribute('href', userData.html_url)
+
+                    return fetchRepos(userData.login)
+                })
+                .then((repos)=>{
+                    console.log(repos);
                 })
                 .catch((err => {
                     loading.style.display = 'none'
@@ -60,7 +74,15 @@ function displayUser() {
 }
 
 function cancel() {
-    userCard.style.display = 'none'
+
+    userCard.classList.remove('show-card')
+    userCard.classList.add('hide-card')
+        setTimeout(() => {
+        userCard.style.display = 'none'
+
+    }, 400);
+    
+
     searchContainer.style.display = 'flex'
     loading.textContent = ""
     loading.style.display = 'none'
