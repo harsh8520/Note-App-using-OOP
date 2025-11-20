@@ -24,8 +24,7 @@ function fetchUser(data) {
 }
 
 function fetchRepos(userLogin){
-    return fetch(`https://api.github.com/users/${userLogin}/repos`)
-    .then(res => res.json())
+    return fetch(`https://api.github.com/users/${userLogin}/repos`).then(res => res.json())
 }
 
 function displayUser() {
